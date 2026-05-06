@@ -1,17 +1,24 @@
 import leases from './leases';
 
-function Dashboard({ onLeaseClick }) {
+function Dashboard({ onLeaseClick, isMobile }) {
   const active = leases.features.filter(f => f.properties.status === 'Active').length;
   const inactive = leases.features.filter(f => f.properties.status === 'Inactive').length;
 
   return (
     <div style={{
-  position: 'absolute', bottom: 20, left: 20, zIndex: 1,
-  background: 'white', borderRadius: '10px',
-  boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
-  width: '280px', padding: '16px',
-  maxHeight: '420px', display: 'flex', flexDirection: 'column'
-}}>
+       position: 'absolute',
+       bottom: isMobile ? 120 : 20,
+       left: 20,
+       zIndex: 2,
+       background: 'white',
+       borderRadius: '10px',
+       boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+       width: isMobile ? 'calc(100% - 40px)' : '280px',
+       padding: '16px',
+       maxHeight: isMobile ? '50vh' : '420px',
+       display: 'flex',
+       flexDirection: 'column'
+    }}>
       <h3 style={{ margin: '0 0 12px', color: '#1e3a8a' }}>Mine Dashboard</h3>
 
       <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>

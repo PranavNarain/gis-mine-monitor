@@ -17,6 +17,15 @@ function App() {
   const [showExpiry, setShowExpiry] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showDashboardMobile, setShowDashboardMobile] = useState(true );
+  const [showLayersMobile, setShowLayersMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth < 768);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
   useEffect(() => {
     const map = new maplibregl.Map({
@@ -117,56 +126,116 @@ const handleSearch = () => {
   }
 };
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+    <div style={{ position: 'fixed', width: '100vw', height: '100vh', overflow: 'hidden'}}>
       <div style={{
-  position: 'absolute', top: 20, left: 20, zIndex: 1,
-  display: 'flex', gap: '8px'
+  position: 'absolute', top: 10, left: 10, zIndex: 1,
+  display: 'flex', gap: '6px',
+  width: isMobile ? 'calc(100% - 20px)' : 'auto'
 }}>
   <input
     value={search}
     onChange={e => setSearch(e.target.value)}
-    placeholder="Search by lease ID, district, mineral..."
-    style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #ccc', width: '280px' }}
+    placeholder={isMobile ? "Search lease, district..." : "Search by lease ID, district, mineral..."}
+    style={{
+      padding: '8px 10px', borderRadius: '6px',
+      border: '1px solid #ccc',
+      flex: 1,
+      fontSize: isMobile ? '13px' : '14px',
+      minWidth: 0
+    }}
   />
   <button
     onClick={handleSearch}
-    style={{ padding: '8px 16px', background: '#1e3a8a', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+    style={{
+      padding: '8px 12px', background: '#1e3a8a',
+      color: 'white', border: 'none',
+      borderRadius: '6px', cursor: 'pointer',
+      fontWeight: 'bold', fontSize: '13px',
+      whiteSpace: 'nowrap', flexShrink: 0
+    }}
   >
     Search
   </button>
-  
 </div>
-<button
-  onClick={() => setShowAnomaly(true)}
+<div style={{
+  position: 'absolute',
+  bottom: isMobile ? 16 : 'auto',
+  top: isMobile ? 'auto' : 70,
+  right: isMobile ? 'auto' : 20,
+  left: isMobile ? 10 : 'auto',
+  width: isMobile ? 'calc(100% - 20px)' : 'auto',
+  zIndex: 1,
+  display: 'flex',
+  flexDirection: isMobile ? 'row' : 'column',
+  flexWrap: isMobile ? 'wrap' : 'nowrap',
+  gap: '6px',
+  justifyContent: isMobile ? 'center' : 'flex-start'
+}}>
+  {isMobile && (
+    <>
+      <button
+  onClick={() => setShowDashboardMobile(!showDashboardMobile)}
   style={{
-    position: 'absolute', top: 20, right: 20, zIndex: 1,
-    padding: '8px 16px', background: '#dc2626', color: 'white',
-    border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'
+    padding: '8px 10px', background: showDashboardMobile ? '#64748b' : '#1e3a8a', color: 'white',
+    border: 'none', borderRadius: '6px', cursor: 'pointer',
+    fontWeight: 'bold', fontSize: '11px', whiteSpace: 'nowrap'
   }}
 >
-  ⚠ AI Anomaly Monitor
+  📊 {showDashboardMobile ? 'Hide' : 'Dashboard'}
 </button>
-<button
-  onClick={() => setShowExpiry(true)}
-  style={{
-    position: 'absolute', top: 70, right: 20, zIndex: 1,
-    padding: '8px 16px', background: '#d97706', color: 'white',
-    border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'
-  }}
->
-  📅 Lease Expiry Monitor
-</button>
-<button
-  onClick={() => setShowNotifications(true)}
-  style={{
-    position: 'absolute', top: 120, right: 20, zIndex: 1,
-    padding: '8px 16px', background: '#2563eb', color: 'white',
-    border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'
-  }}
->
-  🔔 Notifications
-</button>
-      <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
+      <button
+        onClick={() => setShowLayersMobile(!showLayersMobile)}
+        style={{
+          padding: '8px 10px', background: '#15803d', color: 'white',
+          border: 'none', borderRadius: '6px', cursor: 'pointer',
+          fontWeight: 'bold', fontSize: '11px', whiteSpace: 'nowrap'
+        }}
+      >
+        🗂 Layers
+      </button>
+    </>
+  )}
+  <button
+    onClick={() => setShowAnomaly(true)}
+    style={{
+      padding: '8px 10px',
+      background: '#dc2626', color: 'white',
+      border: 'none', borderRadius: '6px',
+      cursor: 'pointer', fontWeight: 'bold',
+      fontSize: isMobile ? '11px' : '14px',
+      whiteSpace: 'nowrap'
+    }}
+  >
+    ⚠ {isMobile ? 'Anomaly' : 'AI Anomaly Monitor'}
+  </button>
+  <button
+    onClick={() => setShowExpiry(true)}
+    style={{
+      padding: '8px 10px',
+      background: '#d97706', color: 'white',
+      border: 'none', borderRadius: '6px',
+      cursor: 'pointer', fontWeight: 'bold',
+      fontSize: isMobile ? '11px' : '14px',
+      whiteSpace: 'nowrap'
+    }}
+  >
+    📅 {isMobile ? 'Expiry' : 'Lease Expiry Monitor'}
+  </button>
+  <button
+    onClick={() => setShowNotifications(true)}
+    style={{
+      padding: '8px 10px',
+      background: '#2563eb', color: 'white',
+      border: 'none', borderRadius: '6px',
+      cursor: 'pointer', fontWeight: 'bold',
+      fontSize: isMobile ? '11px' : '14px',
+      whiteSpace: 'nowrap'
+    }}
+  >
+    🔔 {isMobile ? 'Alerts' : 'Notifications'}
+  </button>
+</div>
+      <div ref={mapContainer} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }} />
 
       {selected && (
         <div style={{
@@ -183,14 +252,22 @@ const handleSearch = () => {
           <button onClick={() => setSelected(null)} style={{ marginTop: '8px', cursor: 'pointer' }}>Close</button>
         </div>
       )}
-      <Dashboard onLeaseClick={(f) => {
-  const coords = f.geometry.coordinates[0];
-  mapRef.current.flyTo({ center: coords[0], zoom: 11 });
-  setSelected(f.properties);
-}} />
+      {(!isMobile || showDashboardMobile) && (
+  <Dashboard
+    onLeaseClick={(f) => {
+      const coords = f.geometry.coordinates[0];
+      mapRef.current.flyTo({ center: coords[0], zoom: 11 });
+      setSelected(f.properties);
+      setShowDashboardMobile(false);
+    }}
+    isMobile={isMobile}
+  />
+)}
 {showAnomaly && <Anomaly onClose={() => setShowAnomaly(false)} />}
   {showExpiry && <Expiry onClose={() => setShowExpiry(false)} />}
-    {mapReady && <LayerToggle map={mapRef.current} />}
+    {mapReady && (!isMobile || showLayersMobile) && (
+  <LayerToggle map={mapRef.current} isMobile={isMobile} />
+)}
     {showNotifications && <Notifications onClose={() => setShowNotifications(false)} />}
     </div>
   );

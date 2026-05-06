@@ -1,6 +1,6 @@
 import React from 'react';
 
-function LayerToggle({ map }) {
+function LayerToggle({ map, isMobile  }) {
   const [layers, setLayers] = React.useState({
     forest: false,
     water: false,
@@ -142,11 +142,17 @@ function LayerToggle({ map }) {
 
   return (
     <div style={{
-      position: 'absolute', bottom: 20, right: 20, zIndex: 1,
-      background: 'white', borderRadius: '10px',
-      boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
-      padding: '16px', width: '210px'
-    }}>
+  position: 'absolute',
+  bottom: isMobile ? 120 : 20,
+  right: isMobile ? 'auto' : 20,
+  left: isMobile ? 20 : 'auto',
+  zIndex: 2,
+  background: 'white',
+  borderRadius: '10px',
+  boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+  padding: '16px',
+  width: isMobile ? 'calc(100% - 40px)' : '210px',
+}}>
       <div style={{ fontWeight: 'bold', color: '#1e3a8a', marginBottom: '12px', fontSize: '14px' }}>
         🗂 Layer Controls
       </div>
