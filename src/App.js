@@ -159,7 +159,7 @@ const handleSearch = () => {
 </div>
 <div style={{
   position: 'absolute',
-  bottom: isMobile ? 16 : 'auto',
+  bottom: isMobile ? 60 : 'auto',
   top: isMobile ? 'auto' : 70,
   right: isMobile ? 'auto' : 20,
   left: isMobile ? 10 : 'auto',
